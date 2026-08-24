@@ -8,7 +8,7 @@ import phonenumbers
 from phonenumbers import geocoder, carrier
 
 intents = discord.Intents.all()
-TOKEN = os.getenv("DISCORD_TOKEN", "حط_التوكن_بتاعك_هنا")
+TOKEN = os.getenv("DISCORD_TOKEN")
 
 bot = commands.Bot(command_prefix="!", intents=intents, help_command=None)
 fake = Faker()
