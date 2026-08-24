@@ -1,0 +1,42 @@
+import discord
+from discord.ext import commands
+from discord.ui import Button, View
+import asyncio
+import io
+import os
+import shlex
+from faker import Faker
+import phonenumbers
+from phonenumbers import geocoder, carrier
+import traceback
+
+# --- إعدادات البوت الأساسية ---
+intents = discord.Intents.all()
+TOKEN = os.getenv("DISCORD_TOKEN", "YOUR_TOKEN_HERE")
+
+bot = commands.Bot(command_prefix="!", intents=intents, help_command=None)
+fake = Faker()
+
+# --- دوال مساعدة (Helpers) ---
+
+def create_embed(title, description=None, color=0x3498db):
+    """دالة لإنشاء Embed موحد الشكل"""
+    embed = discord.Embed(
+        title=title,
+        description=description,
+        color=color,
+        timestamp=discord.utils.utcnow()
+    )
+    embed.set_footer(text="Automated Research Tools | Secure Connection")
+    return embed
+
+async def send_long_output(ctx, content, tool_name):
+    """دالة ذكية لإرسال المخرجات: نص قصير أو ملف طويل"""
+    output = content.strip()
+    if not output:
+        output = "Process completed with no text output."
+
+    if len(output) > 1900:
+        with io.BytesIO(output.encode('utf-8')) as file_bin:
+            file = discord.File(file_bin, filename=f"{tool_name}_report.txt")
+            embed = create_embed(f"✅ Results: {tool_name}", "Output too large, sent as file.", color=0x2ecc71)
